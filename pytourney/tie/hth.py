@@ -66,8 +66,9 @@ def hth(results, cutoff=None):
   Grs = simplified_graph(Gr)
   P = paths(Grs, cutoff=cutoff)
   nodegroups = [frozenset((node,)) for node in nodes]
-  join_or_reorder = True
-  while join_or_reorder:
+  strongly_connected = True  # I assume it initially
+  join_or_reorder = True  # let me to the while loop
+  while join_or_reorder and 1 < len(nodegroups):
     for group1, group2 in itertools.combinations(nodegroups, 2):
       relation = 0
       group1index = nodegroups.index(group1)
@@ -75,18 +76,23 @@ def hth(results, cutoff=None):
         join_or_reorder = False
         from1to2 = ((node1, node2) in P)
         from2to1 = ((node2, node1) in P)
-        if from1to2 == from2to1:
+        if from1to2 and from2to1:
           join_or_reorder = True
+        elif not from1to2 and not from2to1:
+          join_or_reorder = True
+          strongly_connected = False
         elif from1to2:
           if relation == 0:
             relation = 12
           if relation != 12:
             join_or_reorder = True
+          strongly_connected = False
         elif from2to1:
           if relation == 0:
             relation = 21
           if relation != 21:
             join_or_reorder = True
+          strongly_connected = False
         if join_or_reorder:
           nodegroups.remove(group1)
           nodegroups.remove(group2)
@@ -102,7 +108,7 @@ def hth(results, cutoff=None):
         break
   d = {}
   if len(nodegroups) == 1:
-    hth_val = 0
+    hth_val = (1 if strongly_connected else 0)
     for node in nodegroups[0]:
       d[node] = hth_val
   else:
