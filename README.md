@@ -16,7 +16,7 @@ $ pip install git+git://github.com/SzieberthAdam/pytourney.git
 Usage
 -----
 
-The following session calculates the 32th head-to-head tie breaker test case of [Quilici](https://www.quickscores.com/Orgs/Head-To-Head_Tie-Breaker.pdf):
+The following session calculates the 32th head-to-head tie-breaker test case of [Quilici](https://www.quickscores.com/Orgs/Head-To-Head_Tie-Breaker.pdf):
 
 ```python
 >>> import pytourney

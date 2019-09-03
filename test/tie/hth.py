@@ -298,5 +298,13 @@ for _n, _d in TestQuiliciHTH.quilici_test_cases.items():
 del _n, _d, _test_method
 
 
+class TestSzieberthAdamHTH(unittest.TestCase):
+
+  def test_single_node(self):
+    results = [{"A": 0}]
+    hth = {"A": 0}
+    self.assertEqual(pytourney.tie.hth.calculate(results), hth)
+
+
 if __name__ == '__main__':
     unittest.main()
