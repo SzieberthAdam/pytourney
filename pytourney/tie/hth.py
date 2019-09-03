@@ -5,6 +5,9 @@ import networkx as nx
 
 
 def results_graph(results):
+  """
+  Generates a graph of results.
+  """
   G = nx.MultiDiGraph()
   for result in results:
     names = tuple(result.keys())
@@ -69,11 +72,30 @@ def hth(results, paths_cutoff=None):
   determine the head-to-head order.
 
   results attribute should be an iterable of dictionaries of
-  players as keys and scores as values.
+  names/players as keys and scores as values. Note that only the
+  results of the tied members should be passed to this function,
+  not the whole tournament.
 
   paths_cutoff attribute is optional and sets the depth to stop
   the search for paths.
+
+  Return a dictionary with names/players as keys, and HTH
+  scores as values.
   """
+  # Technical note:
+  # First I generate a simplified graph from which I get all
+  # paths. Then I define all nodes as separate groups of nodes:
+  # initially every node has its own group and no ordering is
+  # made. These groups will be merged and transposed based on
+  # their relations. At the end, every node pairs in a given two
+  # groups should be connected in the same way: either all nodes
+  # of group1 should dominate all nodes of group2 or the other
+  # way around. The dominant group should be ahead of the other
+  # in the list of groups. If there is no path or path exists to
+  # both directions between two nodes then the respective groups
+  # should be merged. The groups should be also merged if their
+  # paths are inconsistent. At the end, the dictionary is made
+  # of the final list of groups.
   Gr = results_graph(results)
   nodes = set(Gr.nodes())
   if len(nodes) == 1:
@@ -90,37 +112,37 @@ def hth(results, paths_cutoff=None):
       # the end; I assume disconnection and will set it later if
       # true; its value controls whether 0 or 1 HTH values will
       # be applied to the nodes
-  join = True
+  merge = True
       # this variable controls the next loop; basically if the
-      # nodegroups were joined then it will enforce another
+      # nodegroups were merged then it will enforce another
       # pass if there are multiple nodegroups remained
   transposed = None
       # this stores the recetly transposed group pairs;
       # transposition is a major change in the nodegroups and
       # implies another group ordering pass; the transposed
       # groups can get skipped if unchanged though
-  while (join or transposed) and 1 < len(nodegroups):
+  while (merge or transposed) and 1 < len(nodegroups):
     group_combinations = itertools.combinations(nodegroups, 2)
     for group_pair in group_combinations:
       if transposed == group_pair:
           # skip the checking of the recently transposed groups
         transposed = None
-        join = False
+        merge = False
         continue
       group1, group2 = group_pair
       relation = None
           # relation stores the previous direction of nodes of
           # the two groups; if not consistent over all of
-          # the node pairs then the two groups will be joined;
+          # the node pairs then the two groups will be merged;
           # set as None as the order of the two groups is
           # unknown yet
       group1index = nodegroups.index(group1)
           # the index of the first group is stored; this value
-          # will be used for join and transposition of groups
+          # will be used for merge and transposition of groups
       nodepairs = itertools.product(group1, group2)
       for node1, node2 in nodepairs:
           # for all nodepairs of all group combinations...
-        join = False
+        merge = False
             # no change in the group structure yet
         from1to2 = ((node1, node2) in paths_Grs)
         from2to1 = ((node2, node1) in paths_Grs)
@@ -128,39 +150,39 @@ def hth(results, paths_cutoff=None):
           strongly_connected = False
         if from1to2 and from2to1:
             # two-way path: the two nodes should be weighted
-            # equally; groups will be joined
-          join = True
+            # equally; groups will be merged
+          merge = True
         elif not from1to2 and not from2to1:
             # no path: the two nodes should be weighted equally;
-            # groups will be joined
-          join = True
+            # groups will be merged
+          merge = True
         elif from1to2:
             # node2 (group2) is dominant; if it used to be
-            # differently then join groups
+            # differently then merge groups
           if not relation:  # set initial value
             relation = 12
           elif relation != 12:
-            join = True
+            merge = True
         elif from2to1:
             # similarly, node1 (group1) is dominant
           if not relation:
             relation = 21
           elif relation != 21:
-            join = True
-        if join:
-            # join takes place here; remove the two groups from
+            merge = True
+        if merge:
+            # merge takes place here; remove the two groups from
             # the nodegroups list and add their union to the
             # place of the first group; as this was a major
             # change in the nodegroups I have to start another
             # group ordering pass; this break only exists from
-            # the inner loop but the join will be
+            # the inner loop but the merge will be
             # checked there too to indicate the next pass
           nodegroups.remove(group1)
           nodegroups.remove(group2)
           nodegroups.insert(group1index, group1 | group2)
           break
       else:
-          # the two groups were checked; no joins were necessary
+          # the two groups were checked; no merges were necessary
         if relation == 21:
             # transposition takes place here; remove the second
             # group and place it before the first one then store
@@ -171,13 +193,13 @@ def hth(results, paths_cutoff=None):
           break
         else:
           transposed = None
-      if join or transposed:
+      if merge or transposed:
         break  # pass the break to the outer loop
   # the nodegroups list is done at this point and I only have
   # to transform it to a dictionary with names as keys and HTH
   # values as values; I do that by allocating an increasing
   # number (HTH value) to the groups (starting with 1) and all
-  # nodes in a groups gets that number in the result dictionary;
+  # nodes in a group gets that number in the result dictionary;
   # if there is however a single nodegroup then its nodes get
   # 0 or 1 for being disconnected or strongly connected,
   # respectively
