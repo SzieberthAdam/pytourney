@@ -4,9 +4,20 @@ import itertools
 import networkx as nx
 
 
-def results_graph(results):
+def hth_graph(results):
   """
-  Generates a graph of results.
+  Creates a head-to-head graph.
+
+  results attribute should be an iterable of dictionaries of
+  names/players as keys and scores as values. A dictionary
+  should contain the scores of the players in a given
+  match.
+
+  Return a directed multigraph in which nodes represent
+  names/teams/players and edges represent wins. Draws are
+  handled with two wins vica versa. There is no python graph
+  library yet which supports mixed multigraphs so this is the
+  best I can do here.
   """
   G = nx.MultiDiGraph()
   for result in results:
@@ -16,48 +27,72 @@ def results_graph(results):
       continue
     combs = itertools.combinations(names, 2)
     for name1, name2 in combs:
-      G.add_node(name1)
-      G.add_node(name2)
       score1 = result[name1]
       score2 = result[name2]
       if score2 < score1:
         G.add_edge(name1, name2, **result)
+            # nodes are automatically added if required
       elif score1 < score2:
         G.add_edge(name2, name1, **result)
-      else:
+      else:  # draws are represented with two edges
         G.add_edge(name1, name2, **result)
         G.add_edge(name2, name1, **result)
   return G
 
 
-def simplified_graph(G):
-  G = G.copy()
+def simplified_hth_graph(G):
+  """
+  Creates a simplified head-to-head graph.
+
+  G attribute should be a normal head-to-head graph.
+
+  The simplified graph has no more than a single edge between
+  two nodes. Technically if the two nodes are in a draw relation
+  then there are two win edges between them vica versa.
+
+  The remained edges reflect the dominance relations of the node
+  pairs.
+  """
+  H = G.__class__()
+  H.add_nodes_from(G)
   C = collections.Counter(e[:2] for e in G.edges)
-  while True:
+      # edge key ignored hence e[:2]
+  while True:  # simplify multi edges
     count = 0
-    for edge, count in C.most_common():
+    for (name1, name2), count in C.most_common():
       if count <= 1:
         break
-      name1, name2 = edge
-      reverse_edge = (name2, name1)
-      reverse_count = C[reverse_edge]
-      discard_count = min(reverse_count, count - 1)
-      for _ in range(discard_count):
-        G.remove_edge(*edge)
-        G.remove_edge(*reverse_edge)
-      del C[edge]
-      del C[reverse_edge]
+      reverse_count = C[(name2, name1)]  # reverse_count < count
+      if reverse_count < count:
+        H.add_edge(name1, name2)
+      elif reverse_count == count:
+        H.add_edge(name1, name2)
+        H.add_edge(name2, name1)
+      else:  # should never reached because of C.most_common()
+        raise NotImplementedError("unexpected count relation")
+      del C[(name1, name2)]
+      del C[(name2, name1)]
     if count <= 1:
       break
-  return G
+  for (name1, name2) in C:  # add the remaining single edges
+    H.add_edge(name1, name2)
+  return H
 
 
-def paths(simplified_results_graph, cutoff=None):
-  Grs = simplified_results_graph
+def paths(simplified_hth_graph, cutoff=None):
+  """
+  Generates a set of paths of the graph.
+
+  cutoff attribute is optional and sets the depth to stop the
+  search for paths.
+  """
+  H = simplified_hth_graph
   result = set()
-  gen = nx.all_pairs_shortest_path(Grs, cutoff=cutoff)
+  gen = nx.all_pairs_shortest_path(H, cutoff=cutoff)
   for name1, lengths in gen:
     names2 = set(lengths.keys()) - {name1}
+        # lengths always contain the node itself but I do want
+        # the other nodes which is reached from this node
     for name2 in names2:
       result.add((name1, name2))
   return result
@@ -72,9 +107,10 @@ def hth(results, paths_cutoff=None):
   determine the head-to-head order.
 
   results attribute should be an iterable of dictionaries of
-  names/players as keys and scores as values. Note that only the
-  results of the tied members should be passed to this function,
-  not the whole tournament.
+  names/players as keys and scores as values. A dictionary
+  should contain the scores of the *tied* players in a given
+  match. Note that only the results of the tied members involved
+  should be passed to this function, not the whole tournament.
 
   paths_cutoff attribute is optional and sets the depth to stop
   the search for paths.
@@ -89,21 +125,21 @@ def hth(results, paths_cutoff=None):
   # made. These groups will be merged and transposed based on
   # their relations. At the end, every node pairs in a given two
   # groups should be connected in the same way: either all nodes
-  # of group1 should dominate all nodes of group2 or the other
+  # of group-1 should dominate all nodes of group-2 or the other
   # way around. The dominant group should be ahead of the other
   # in the list of groups. If there is no path or path exists to
   # both directions between two nodes then the respective groups
   # should be merged. The groups should be also merged if their
   # paths are inconsistent. At the end, the dictionary is made
   # of the final list of groups.
-  Gr = results_graph(results)
+  Gr = hth_graph(results)
   nodes = set(Gr.nodes())
   if len(nodes) == 1:
     return {next(iter(nodes)): 0}
         # a single node will get reported as not strongly
         # connected (0 replaces Quilici's "--" in the output)
-  Grs = simplified_graph(Gr)
-  paths_Grs = paths(Grs, cutoff=paths_cutoff)
+  H = simplified_hth_graph(Gr)
+  paths_H = paths(H, cutoff=paths_cutoff)
   nodegroups = [frozenset((node,)) for node in nodes]
       # initially each node has its own group; they may merge
       # later
@@ -144,8 +180,8 @@ def hth(results, paths_cutoff=None):
           # for all nodepairs of all group combinations...
         merge = False
             # no change in the group structure yet
-        from1to2 = ((node1, node2) in paths_Grs)
-        from2to1 = ((node2, node1) in paths_Grs)
+        from1to2 = ((node1, node2) in paths_H)
+        from2to1 = ((node2, node1) in paths_H)
         if not (from1to2 and from2to1):
           strongly_connected = False
         if from1to2 and from2to1:

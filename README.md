@@ -20,7 +20,7 @@ The following session calculates the 32th head-to-head tie-breaker test case of 
 
 ```python
 >>> import pytourney
->>> results = [{"a":3, "b":1}, {"a":4, "c":2}, {"b": 1, "d":0}, {"c": 2, "d":1}, {"d": 3, "e":1}, {"c": 2, "e":0}]
+>>> results =[{"a":3,"b":1},{"a":4,"c":2},{"b":1,"d":0},{"c":2,"d":1},{"d":3,"e":1},{"c":2,"e":0}]
 >>> pytourney.tie.hth.calculate(results)
 {'a': 1, 'b': 2, 'c': 2, 'd': 3, 'e': 4}
 ```

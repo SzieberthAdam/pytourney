@@ -3,7 +3,7 @@ import unittest
 import pytourney
 
 class TestQuiliciHTH(unittest.TestCase):
-  quilici_test_cases = {
+  test_cases = {
       1: {
         "results": [
             {"A": 0},
@@ -289,7 +289,7 @@ class TestQuiliciHTH(unittest.TestCase):
       },
   }
 
-for _n, _d in TestQuiliciHTH.quilici_test_cases.items():
+for _n, _d in TestQuiliciHTH.test_cases.items():
   _test_method = lambda self, _d=_d: self.assertEqual(
       pytourney.tie.hth.calculate(_d["results"]), _d["hth"]
   )
@@ -299,11 +299,45 @@ del _n, _d, _test_method
 
 
 class TestSzieberthAdamHTH(unittest.TestCase):
+  test_cases = {
+      1: {
+        "results": [
+            {"A": 0},
+        ],
+        "hth": {"A": 0},
+      },
+      2: {
+        "results": [
+            {"A": 1, "B": 0},
+            {"A": 0, "B": 0},
+            {"B": 0, "C": 0},
+        ],
+        "hth": {"A": 1, "B": 2, "C": 2},
+      },
+      3: {
+        "results": [
+            {"A": 1, "B": 0},
+            {"A": 1, "B": 0},
+            {"A": 0, "B": 1},
+            {"B": 1, "C": 0},
+            {"B": 0, "C": 1},
+        ],
+        "hth": {"A": 1, "B": 2, "C": 2},
+      },
+  }
 
-  def test_single_node(self):
-    results = [{"A": 0}]
-    hth = {"A": 0}
-    self.assertEqual(pytourney.tie.hth.calculate(results), hth)
+for _n, _d in TestSzieberthAdamHTH.test_cases.items():
+  _test_method = lambda self, _d=_d: self.assertEqual(
+      pytourney.tie.hth.calculate(_d["results"]), _d["hth"]
+  )
+  _test_method.__name__ = f'test_szieberth_{_n:0>2}'
+  setattr(
+      TestSzieberthAdamHTH,
+      _test_method.__name__,
+      _test_method,
+  )
+del _n, _d, _test_method
+
 
 
 if __name__ == '__main__':
