@@ -135,9 +135,11 @@ def hth(results, paths_cutoff=None):
   Gr = hth_graph(results)
   nodes = set(Gr.nodes())
   if len(nodes) == 1:
-    return {next(iter(nodes)): 0}
-        # a single node will get reported as not strongly
-        # connected (0 replaces Quilici's "--" in the output)
+    return {next(iter(nodes)): -1}
+        # a single node will get reported specifically as -1
+        # to support text formatting like replacing it with
+        # empty string in reports;
+        # note that 0 replaces Quilici's "--" in the output
   H = simplified_hth_graph(Gr)
   paths_H = paths(H, cutoff=paths_cutoff)
   nodegroups = [frozenset((node,)) for node in nodes]

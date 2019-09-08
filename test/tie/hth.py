@@ -304,7 +304,8 @@ class TestSzieberthAdamHTH(unittest.TestCase):
         "results": [
             {"A": 0},
         ],
-        "hth": {"A": 0},
+        "hth": {"A": -1},
+            # A single node should be reported differently
       },
       2: {
         "results": [
@@ -323,6 +324,14 @@ class TestSzieberthAdamHTH(unittest.TestCase):
             {"B": 0, "C": 1},
         ],
         "hth": {"A": 1, "B": 2, "C": 2},
+      },
+      4: {
+        "results": [
+            {"A": 1, "B": 0},
+            {"B": 0, "C": 0},
+            {"C": 1, "A": 0},
+        ],
+        "hth": {"A": 1, "B": 1, "C": 1},
       },
   }
 
