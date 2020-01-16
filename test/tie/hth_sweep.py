@@ -2,7 +2,7 @@ import unittest
 
 import pytourney
 
-class TestQuiliciHTH(unittest.TestCase):
+class TestQuiliciHTHSweep(unittest.TestCase):
   test_cases = {
       1: {
         "results": [
@@ -21,7 +21,7 @@ class TestQuiliciHTH(unittest.TestCase):
         "results": [
             {"A": 3, "B": 3},
         ],
-        "hth": {"A": 1, "B": 1},
+        "hth": {"A": 0, "B": 0},
       },
       4: {
         "results": [
@@ -43,7 +43,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"A": 1, "B": 0},
             {"B": 3, "C": 2},
         ],
-        "hth": {"A": 1, "B": 2, "C": 3},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
       7: {
         "results": [
@@ -88,21 +88,21 @@ class TestQuiliciHTH(unittest.TestCase):
             {"A": 10, "B": 1},
             {"B": 2, "C": 2},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
       13: {
         "results": [
             {"A": 1, "B": 1},
             {"B": 2, "C": 2},
         ],
-        "hth": {"A": 1, "B": 1, "C": 1},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
       14: {
         "results": [
             {"A": 1, "B": 1},
             {"A": 4, "C": 2},
         ],
-        "hth": {"A": 1, "B": 1, "C": 2},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
       15: {
         "results": [
@@ -110,7 +110,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"B": 4, "C": 2},
             {"C": 4, "A": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 1},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
       16: {
         "results": [
@@ -119,7 +119,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"B": 1, "C": 0},
             {"C": 4, "A": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 1},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
       17: {
         "results": [
@@ -151,7 +151,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"B": 2, "D": 1},
             {"C": 0, "D": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 2, "D": 2},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       21: {
         "results": [
@@ -160,7 +160,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"B": 2, "D": 0},
             {"D": 1, "C": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 1, "D": 1},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       22: {
         "results": [
@@ -168,7 +168,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"B": 2, "C": 1},
             {"C": 2, "D": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 3, "D": 4},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       23: {
         "results": [
@@ -176,7 +176,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"A": 2, "C": 1},
             {"B": 2, "D": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2, "D": 2},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       24: {
         "results": [
@@ -185,7 +185,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"B": 1, "D": 0},
             {"C": 1, "D": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2, "D": 3},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       25: {
         "results": [
@@ -193,7 +193,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"B": 2, "D": 1},
             {"C": 1, "D": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 1, "D": 2},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       26: {
         "results": [
@@ -201,7 +201,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"B": 2, "C": 1},
             {"C": 1, "D": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 2, "D": 3},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       27: {
         "results": [
@@ -210,7 +210,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"D": 1, "B": 0},
             {"C": 1, "D": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2, "D": 2},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       28: {
         "results": [
@@ -219,7 +219,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"C": 1, "D": 0},
             {"C": 1, "E": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 2, "D": 3, "E": 3},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0},
       },
       29: {
         "results": [
@@ -228,7 +228,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"C": 1, "A": 0},
             {"C": 1, "D": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 1, "D": 2},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0},
       },
       30: {
         "results": [
@@ -237,7 +237,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"D": 1, "C": 1},
             {"C": 1, "E": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2, "D": 2, "E": 3},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0},
       },
       31: {
         "results": [
@@ -247,7 +247,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"C": 1, "E": 0},
             {"D": 1, "E": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2, "D": 2, "E": 3},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0},
       },
       32: {
         "results": [
@@ -258,7 +258,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"C": 1, "E": 0},
             {"D": 1, "E": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2, "D": 3, "E": 4},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0},
       },
       33: {
         "results": [
@@ -269,7 +269,7 @@ class TestQuiliciHTH(unittest.TestCase):
             {"C": 1, "E": 0},
             {"D": 1, "E": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 3, "D": 3, "E": 4},
+        "hth": {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0},
       },
       34: {
         "results": [
@@ -283,22 +283,27 @@ class TestQuiliciHTH(unittest.TestCase):
             {"F": 1, "G": 0},
         ],
         "hth": {
-            "A": 1, "B": 2, "C": 2, "D": 3,
-            "E": 4, "F": 4, "G": 5
+            "A": 0, "B": 0, "C": 0, "D": 0,
+            "E": 0, "F": 0, "G": 0
         },
       },
   }
 
-for _n, _d in TestQuiliciHTH.test_cases.items():
+for _n, _d in TestQuiliciHTHSweep.test_cases.items():
   _test_method = lambda self, _d=_d: self.assertEqual(
-      pytourney.tie.hth.calculate(_d["results"]), _d["hth"]
+      pytourney.tie.hth_sweep.calculate(_d["results"]),
+      _d["hth"],
   )
   _test_method.__name__ = f'test_quilici_{_n:0>2}'
-  setattr(TestQuiliciHTH, _test_method.__name__, _test_method)
+  setattr(
+      TestQuiliciHTHSweep,
+      _test_method.__name__,
+      _test_method,
+  )
 del _n, _d, _test_method
 
 
-class TestSzieberthAdamHTH(unittest.TestCase):
+class TestSzieberthAdamHTHSweep(unittest.TestCase):
   test_cases = {
       1: {
         "results": [
@@ -313,7 +318,7 @@ class TestSzieberthAdamHTH(unittest.TestCase):
             {"A": 0, "B": 0},
             {"B": 0, "C": 0},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
       3: {
         "results": [
@@ -323,7 +328,7 @@ class TestSzieberthAdamHTH(unittest.TestCase):
             {"B": 1, "C": 0},
             {"B": 0, "C": 1},
         ],
-        "hth": {"A": 1, "B": 2, "C": 2},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
       4: {
         "results": [
@@ -331,17 +336,18 @@ class TestSzieberthAdamHTH(unittest.TestCase):
             {"B": 0, "C": 0},
             {"C": 1, "A": 0},
         ],
-        "hth": {"A": 1, "B": 1, "C": 1},
+        "hth": {"A": 0, "B": 0, "C": 0},
       },
   }
 
-for _n, _d in TestSzieberthAdamHTH.test_cases.items():
+for _n, _d in TestSzieberthAdamHTHSweep.test_cases.items():
   _test_method = lambda self, _d=_d: self.assertEqual(
-      pytourney.tie.hth.calculate(_d["results"]), _d["hth"]
+      pytourney.tie.hth_sweep.calculate(_d["results"]),
+      _d["hth"],
   )
   _test_method.__name__ = f'test_szieberth_{_n:0>2}'
   setattr(
-      TestSzieberthAdamHTH,
+      TestSzieberthAdamHTHSweep,
       _test_method.__name__,
       _test_method,
   )
