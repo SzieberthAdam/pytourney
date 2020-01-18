@@ -1,3 +1,6 @@
+# Reference:
+# https://operations.nfl.com/the-rules/nfl-tiebreaking-procedures/
+
 def hth(results):
   """
   Does the head-to-head ordering.
